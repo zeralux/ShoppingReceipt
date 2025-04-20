@@ -26,7 +26,9 @@ public class ShoppingReceipt {
         this.location = location;
     }
 
-    // 印出票據
+    /**
+     * 印出票據
+     */
     public void printReceipt() {
         // 票據內容
 //        StringBuilder receipt = new StringBuilder();
@@ -42,11 +44,11 @@ public class ShoppingReceipt {
             BigDecimal price = product.getPrice();
             Integer quantity = product.getQuantity();
 
-            // 商品費用
+            // 商品費用 productFee
             BigDecimal productFee = price.multiply(BigDecimal.valueOf(quantity));
             subTotal = subTotal.add(productFee);
 
-            // 商品稅
+            // 商品稅 productTax
             ProductCategory productCategory = ProductCategoryConfig.getCategory(productName);
             BigDecimal productTax = this.getProductTax(location, productCategory, productFee);
             tax = tax.add(productTax);
@@ -74,27 +76,34 @@ public class ShoppingReceipt {
     }
 
     /**
+     * 印出票據(列)
+     */
+    private String getReceiptRow(String arg1, String arg2, String arg3) {
+        return String.format("%-16s %10s %10s", arg1, arg2, arg3);
+    }
+
+    /**
+     * 獲取 $價格
+     */
+    private String getPriceString(BigDecimal amount) {
+        return String.format("$%.2f", amount);
+    }
+
+    /**
+     * 計算商品稅
+     */
+    private BigDecimal getProductTax(Location location, ProductCategory productCategory, BigDecimal productFee) {
+        BigDecimal salesTaxRate = location.getSalesTaxRate(productCategory);
+        BigDecimal productTax = salesTaxRate.multiply(productFee);
+        return this.roundUpToNearest005(productTax);
+    }
+
+    /**
      * 四捨五入到最接近的 0.05（進位）
      * 例如：1.13 -> 1.15, 1.16 -> 1.20
      */
     private BigDecimal roundUpToNearest005(BigDecimal amount) {
         double v = Math.ceil(amount.doubleValue() * 20) / 20;
         return new BigDecimal(v).setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private String getReceiptRow(String arg1, String arg2, String arg3) {
-        return String.format("%-16s %10s %10s", arg1, arg2, arg3);
-    }
-
-    private String getPriceString(BigDecimal amount) {
-        return String.format("$%.2f", amount);
-    }
-
-    // 計算商品稅
-    private BigDecimal getProductTax(Location location, ProductCategory productCategory, BigDecimal productFee) {
-        // 獲得商品州稅
-        BigDecimal salesTaxRate = location.getSalesTaxRate(productCategory);
-        BigDecimal productTax = productFee.multiply(salesTaxRate);
-        return this.roundUpToNearest005(productTax);
     }
 }
