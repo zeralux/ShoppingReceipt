@@ -26,7 +26,9 @@ public class ProductCategoryConfig {
         Map<String, String> rawMap = yaml.load(inputStream);
         for (Map.Entry<String, String> entry : rawMap.entrySet()) {
             try {
-                categoryMap.put(entry.getKey(), ProductCategory.valueOf(entry.getValue()));
+                String productName = entry.getKey();
+                ProductCategory productCategory = ProductCategory.valueOf(entry.getValue());
+                categoryMap.put(productName, productCategory);
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("讀取YAML檔錯誤: " + YAML_PATH, e);
             }

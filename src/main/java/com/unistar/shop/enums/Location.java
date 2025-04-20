@@ -28,6 +28,7 @@ public enum Location {
     },
     ;
 
+    // Open/Closed Principle
     // 獲取商品稅率
     public abstract BigDecimal getSalesTaxRate(ProductCategory category);
 }

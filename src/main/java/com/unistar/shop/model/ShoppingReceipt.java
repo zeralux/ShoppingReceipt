@@ -48,9 +48,7 @@ public class ShoppingReceipt {
 
             // 商品稅
             ProductCategory productCategory = ProductCategoryConfig.getCategory(productName);
-            BigDecimal salesTaxRate = location.getSalesTaxRate(productCategory);
-            BigDecimal productTax = productFee.multiply(salesTaxRate);
-            productTax = this.roundUpToNearest005(productTax);
+            BigDecimal productTax = this.getProductTax(location, productCategory, productFee);
             tax = tax.add(productTax);
 
             // 列印品項
@@ -90,5 +88,13 @@ public class ShoppingReceipt {
 
     private String getPriceString(BigDecimal amount) {
         return String.format("$%.2f", amount);
+    }
+
+    // 計算商品稅
+    private BigDecimal getProductTax(Location location, ProductCategory productCategory, BigDecimal productFee) {
+        // 獲得商品州稅
+        BigDecimal salesTaxRate = location.getSalesTaxRate(productCategory);
+        BigDecimal productTax = productFee.multiply(salesTaxRate);
+        return this.roundUpToNearest005(productTax);
     }
 }
