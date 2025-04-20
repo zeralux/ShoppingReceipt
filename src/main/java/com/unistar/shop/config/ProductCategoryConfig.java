@@ -10,7 +10,7 @@ import java.util.Map;
 public class ProductCategoryConfig {
 
     private static final String YAML_PATH = "/product-category.yml";
-    private static final Map<String, ProductCategory> categoryMap = new HashMap<>();
+    private static final Map<String, ProductCategory> PRODUCT_CATEGORY_MAP = new HashMap<>();
 
     private ProductCategoryConfig() {
     }
@@ -28,7 +28,7 @@ public class ProductCategoryConfig {
             try {
                 String productName = entry.getKey();
                 ProductCategory productCategory = ProductCategory.valueOf(entry.getValue());
-                categoryMap.put(productName, productCategory);
+                PRODUCT_CATEGORY_MAP.put(productName, productCategory);
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("讀取YAML檔錯誤: " + YAML_PATH, e);
             }
@@ -36,7 +36,7 @@ public class ProductCategoryConfig {
     }
 
     public static ProductCategory getCategory(String productName) {
-        ProductCategory productCategory = categoryMap.get(productName);
+        ProductCategory productCategory = PRODUCT_CATEGORY_MAP.get(productName);
         if (productCategory == null) {
             throw new RuntimeException("讀取YAML檔錯誤: " + YAML_PATH + " , 不存在productName值:" + productName);
         }

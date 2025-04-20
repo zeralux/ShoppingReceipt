@@ -11,7 +11,7 @@ import java.util.Map;
 public class LocationTaxRatesConfig {
 
     private static final String YAML_PATH = "/location-tax-rates.yml";
-    private static final Map<Location, BigDecimal> locationTaxRatesMap = new HashMap<>();
+    private static final Map<Location, BigDecimal> LOCATION_TAX_RATES_MAP = new HashMap<>();
 
     private LocationTaxRatesConfig() {
     }
@@ -29,7 +29,7 @@ public class LocationTaxRatesConfig {
             try {
                 Location location = Location.valueOf(entry.getKey());
                 BigDecimal taxRates = BigDecimal.valueOf(((Number) entry.getValue()).doubleValue());
-                locationTaxRatesMap.put(location, taxRates);
+                LOCATION_TAX_RATES_MAP.put(location, taxRates);
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("讀取YAML檔錯誤: " + YAML_PATH, e);
             }
@@ -37,7 +37,7 @@ public class LocationTaxRatesConfig {
     }
 
     public static BigDecimal getTaxRates(Location location) {
-        BigDecimal taxRates = locationTaxRatesMap.get(location);
+        BigDecimal taxRates = LOCATION_TAX_RATES_MAP.get(location);
         if (taxRates == null) {
             throw new RuntimeException("讀取YAML檔錯誤: " + YAML_PATH + " , 不存在location值:" + location.name());
         }
